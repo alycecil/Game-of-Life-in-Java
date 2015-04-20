@@ -1,7 +1,5 @@
 package GameOfLife;
 
-import sun.applet.AppletIllegalArgumentException;
-
 /**
  * Game implemented in console form.
  * 
@@ -49,7 +47,7 @@ public class BoardConsoleVisualizer extends Board implements IBoardVisualizer {
 		if (timeSleep > 0)
 			this.timeSleep = timeSleep;
 		else
-			throw new AppletIllegalArgumentException(
+			throw new IllegalStateException(
 					"timeSleep must be bigger then zero.");
 
 		this.displayCurrentCoordinates = displayCurrentCoordinates;
