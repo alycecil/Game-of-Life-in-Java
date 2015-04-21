@@ -1,13 +1,16 @@
 package wcecil.life.game;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.ImageView;
 
+import java.util.HashMap;
 import java.util.Timer;
 
 import GameOfLife.Board;
+import GameOfLife.Cell;
 import GameOfLife.IBoardVisualizer;
 
 public class GameState extends Board implements IBoardVisualizer {
@@ -18,6 +21,7 @@ public class GameState extends Board implements IBoardVisualizer {
     static GameState instance = new GameState();
     private final Paint paintEmpty;
     private final Paint paintAlive;
+    float dw, dh, aspectRatio, xStep, yStep;
     Timer timer;
     ImageView imageView;
     Canvas canvas;
@@ -27,17 +31,11 @@ public class GameState extends Board implements IBoardVisualizer {
 
     private GameState() {
         timer = new Timer("GameOfLifeTimer", true);
-        timer.scheduleAtFixedRate(GameTimerTask.getInstance(),INITIAL_DELAY,PERIOD);
+        timer.scheduleAtFixedRate(GameTimerTask.getInstance(), INITIAL_DELAY, PERIOD);
         paintAlive = new Paint();
         paintAlive.setColor(0xFFD99AB5);
         paintEmpty = new Paint();
         paintEmpty.setColor(0xFFF0F0F0);
-
-        addCell(2, 2);
-        addCell(3, 2);
-        addCell(2, 3);
-        addCell(3, 3);
-        addCell(1, 3);
     }
 
     public static GameState getInstance() {
@@ -46,26 +44,17 @@ public class GameState extends Board implements IBoardVisualizer {
 
     @Override
     public void displayCurrentStateOfBoard() {
-
         canvas.drawColor(Color.BLUE);
 
-        float dw = canvas.getWidth();
-        float dh = canvas.getHeight();
-
-        float aspectRatio = (dw)/(dh);
-
-        float xStep = (dw) / (areaSize * aspectRatio);
-        float yStep = (dh) / areaSize;
-
         float x0 = 0f, y0, x1, y1;
-        for (int i = 0; i < areaSize*aspectRatio; i++) {
+        for (int i = 0; i < areaSize * aspectRatio; i++) {
             y0 = 0f;
-            x1 = x0+xStep;
-            x0+=BORDER_X;
+            x1 = x0 + xStep;
+            x0 += BORDER_X;
             for (int j = 0; j < areaSize; j++) {
 
                 y1 = y0 + yStep;
-                y0+=BORDER_Y;
+                y0 += BORDER_Y;
 
                 Paint paint;
                 if (isCellExist(j, i)) {
@@ -74,11 +63,11 @@ public class GameState extends Board implements IBoardVisualizer {
                     paint = paintEmpty;
                 }
 
-                canvas.drawRect(x0,y0,x1,y1,paint);
+                canvas.drawRect(x0, y0, x1, y1, paint);
 
-                y0=y1;
+                y0 = y1;
             }
-            x0=x1;
+            x0 = x1;
         }
 
         //force redraw at next chance
@@ -97,5 +86,27 @@ public class GameState extends Board implements IBoardVisualizer {
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
+
+        dw = canvas.getWidth();
+        dh = canvas.getHeight();
+
+        aspectRatio = (dw) / (dh);
+
+        xStep = (dw) / (areaSize * aspectRatio);
+        yStep = (dh) / areaSize;
+
+
+    }
+
+    public void handleClick(float x, float y) {
+
+        int myX = (int) (x / xStep);
+        int myY = (int) (y / xStep);
+
+        addCell(myY,myX);
+
+        System.out.println("cell added @"+myX+","+myY);
+
+        displayCurrentStateOfBoard();
     }
 }

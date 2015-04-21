@@ -64,11 +64,10 @@ public class LifeActivity extends Activity {
         bitmap = Bitmap.createBitmap((int) dw, (int) dh,
                 Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
-        paint = new Paint();
-        paint.setColor(Color.GREEN);
-        paint.setStrokeWidth(10);
         imageView.setImageBitmap(bitmap);
         gameState.setCanvas(canvas);
+
+        gameState.displayCurrentStateOfBoard();
 
 
         // Set up an instance of SystemUiHider to control the system UI for
@@ -115,9 +114,8 @@ public class LifeActivity extends Activity {
 
         contentView.setOnTouchListener(
                 new View.OnTouchListener() {
-                    private static final int MAX_CLICK_DURATION = 200;
+                    private static final int MAX_CLICK_DURATION = 300;
                     private long startClickTime;
-                    private Point pnt;
 
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -132,14 +130,7 @@ public class LifeActivity extends Activity {
                                     //click event has occurred
                                     handleClick(v, event);
                                 } else {
-                                    handleDrag(v, event, pnt);
-                                }
-                            }
-                            break;
-                            case MotionEvent.ACTION_MOVE: {
-                                long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                                if (clickDuration > MAX_CLICK_DURATION) {
-                                    handleClick(v, event);
+                                    handleDrag(v, event);
                                 }
                             }
                             break;
@@ -159,7 +150,7 @@ public class LifeActivity extends Activity {
         findViewById(R.id.stepButton).setOnClickListener(stepListener);
     }
 
-    private void handleDrag(View v, MotionEvent event, Point pnt) {
+    private void handleDrag(View v, MotionEvent event) {
         System.out.println("Drag : " + event);
 
         if (TOGGLE_ON_CLICK) {
@@ -172,6 +163,7 @@ public class LifeActivity extends Activity {
     private void handleClick(View view, MotionEvent event) {
         System.out.println("Click : " + event);
 
+        GameState.getInstance().handleClick(event.getX(), event.getY());
 
     }
 
