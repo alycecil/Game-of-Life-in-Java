@@ -95,12 +95,16 @@ public class GameState extends Board implements IBoardVisualizer {
 
     }
 
-    public void handleClick(float x, float y) {
+    public void handleClick(float x, float y, boolean removable) {
 
         int myX = (int) (x / xStep);
         int myY = (int) (y / xStep);
 
-        addCell(myY,myX);
+        if(removable && isCellExist(myY,myX)){
+            removeCell(myY,myX);
+        }else {
+            addCell(myY, myX);
+        }
 
         System.out.println("cell added @"+myX+","+myY);
 

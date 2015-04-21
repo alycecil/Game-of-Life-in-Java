@@ -130,6 +130,10 @@ public class LifeActivity extends Activity {
                                 }
                             }
                             break;
+                            case MotionEvent.ACTION_MOVE: {
+                                handleDrag(v, event);
+                            }
+                            break;
                         }
                         return true;
                     }
@@ -149,6 +153,10 @@ public class LifeActivity extends Activity {
     private void handleDrag(View v, MotionEvent event) {
         System.out.println("Drag : " + event);
 
+        GameState.getInstance().running=false;
+
+        GameState.getInstance().handleClick(event.getX(), event.getY(),false);
+
         if (TOGGLE_ON_CLICK) {
             mSystemUiHider.toggle();
         } else {
@@ -159,7 +167,9 @@ public class LifeActivity extends Activity {
     private void handleClick(View view, MotionEvent event) {
         System.out.println("Click : " + event);
 
-        GameState.getInstance().handleClick(event.getX(), event.getY());
+        GameState.getInstance().running=false;
+
+        GameState.getInstance().handleClick(event.getX(), event.getY(),true);
 
     }
 
@@ -200,17 +210,20 @@ public class LifeActivity extends Activity {
     View.OnClickListener runPauseListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Button b = (Button) view;
-
             GameState.getInstance().running = !GameState.getInstance().running;
 
-            if (GameState.getInstance().running) {
-                b.setText(R.string.run);
-            } else {
-                b.setText(R.string.pause);
-            }
+            updateRunningButton();
         }
     };
+
+    private void updateRunningButton() {
+        Button b = (Button) findViewById(R.id.runPauseButton);
+        if (!GameState.getInstance().running) {
+            b.setText(R.string.run);
+        } else {
+            b.setText(R.string.pause);
+        }
+    }
 
     Handler mHideHandler = new Handler();
     Runnable mHideRunnable = new Runnable() {
