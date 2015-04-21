@@ -1,20 +1,17 @@
 package wcecil.life.game;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.ImageView;
 
-import java.util.HashMap;
 import java.util.Timer;
 
 import GameOfLife.Board;
-import GameOfLife.Cell;
 import GameOfLife.IBoardVisualizer;
 
 public class GameState extends Board implements IBoardVisualizer {
-    private static final long PERIOD = 1000l;
+    private static final long PERIOD = 333l;
     private static final long INITIAL_DELAY = 1000l;
     private static final float BORDER_X = 2f;
     private static final float BORDER_Y = 2f;

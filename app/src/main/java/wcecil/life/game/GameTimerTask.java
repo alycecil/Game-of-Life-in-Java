@@ -1,10 +1,7 @@
 package wcecil.life.game;
 
 import java.util.TimerTask;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import wcecil.life.ui.LifeActivity;
 
 
 public class GameTimerTask extends TimerTask {

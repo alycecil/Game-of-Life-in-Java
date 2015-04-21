@@ -1,16 +1,10 @@
 package wcecil.life.ui;
 
-import wcecil.life.game.GameState;
-import wcecil.life.R;
-import wcecil.life.ui.util.SystemUiHider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,8 +15,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import wcecil.life.R;
+import wcecil.life.game.GameState;
+import wcecil.life.ui.util.SystemUiHider;
 
 
 /**
