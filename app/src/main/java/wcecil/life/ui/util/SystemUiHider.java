@@ -1,4 +1,4 @@
-package wcecil.life.util;
+package wcecil.life.ui.util;
 
 import android.app.Activity;
 import android.os.Build;

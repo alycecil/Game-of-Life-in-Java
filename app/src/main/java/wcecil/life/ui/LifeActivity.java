@@ -1,14 +1,21 @@
-package wcecil.life;
+package wcecil.life.ui;
 
-import wcecil.life.util.SystemUiHider;
+import wcecil.life.game.GameState;
+import wcecil.life.R;
+import wcecil.life.ui.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+
+import java.util.Calendar;
 
 
 /**
@@ -34,7 +41,7 @@ public class LifeActivity extends Activity {
      * If set, will toggle the system UI visibility upon interaction. Otherwise,
      * will show the system UI visibility upon interaction.
      */
-    private static final boolean TOGGLE_ON_CLICK = true;
+    private static final boolean TOGGLE_ON_CLICK = false;
 
     /**
      * The flags to pass to {@link SystemUiHider#getInstance}.
@@ -45,6 +52,7 @@ public class LifeActivity extends Activity {
      * The instance of the {@link SystemUiHider} for this activity.
      */
     private SystemUiHider mSystemUiHider;
+    private Canvas canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +61,7 @@ public class LifeActivity extends Activity {
         setContentView(R.layout.activity_life);
 
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
-        final View contentView = findViewById(R.id.fullscreen_content);
+        final View contentView = findViewById(R.id.fullscreenView);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
@@ -101,18 +109,63 @@ public class LifeActivity extends Activity {
         contentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TOGGLE_ON_CLICK) {
-                    mSystemUiHider.toggle();
-                } else {
-                    mSystemUiHider.show();
+                handleClick(view);
+            }
+        });
+
+        contentView.setOnTouchListener(
+        new View.OnTouchListener() {
+            private static final int MAX_CLICK_DURATION = 200;
+            private long startClickTime;
+            private Point pnt;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        startClickTime = Calendar.getInstance().getTimeInMillis();
+                        pnt = new Point((int)v.getX(),(int)v.getY());
+
+                    } break;
+                    case MotionEvent.ACTION_UP: {
+                        long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
+                        if(clickDuration < MAX_CLICK_DURATION) {
+                            //click event has occurred
+                            handleClick(v);
+                        }else{
+                            handleDrag(v, pnt);
+                            pnt = null;
+                        }
+
+                    } break;
+                    case MotionEvent.ACTION_MOVE: {
+                        long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
+                        if(clickDuration > MAX_CLICK_DURATION) {
+                            handleDrag(v, pnt);
+                        }
+                    } break;
                 }
+                return true;
             }
         });
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.runPauseButton).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.stepButton).setOnTouchListener(mDelayHideTouchListener);
+    }
+
+    private void handleDrag(View v, Point pnt) {
+
+    }
+
+    private void handleClick(View view) {
+        if (TOGGLE_ON_CLICK) {
+            mSystemUiHider.toggle();
+        } else {
+            mSystemUiHider.show();
+        }
     }
 
     @Override
@@ -134,12 +187,28 @@ public class LifeActivity extends Activity {
     View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
+            if(view.getId()==R.id.runPauseButton){
+                runPauseClick(view, motionEvent);
+            }
             if (AUTO_HIDE) {
                 delayedHide(AUTO_HIDE_DELAY_MILLIS);
             }
             return false;
         }
     };
+
+    private void runPauseClick(View view, MotionEvent motionEvent) {
+        Button b = (Button) view;
+
+        GameState.getInstance().running=!GameState.getInstance().running;
+
+        if(GameState.getInstance().running){
+            b.setText(R.string.run);
+        }else{
+            b.setText(R.string.pause);
+        }
+
+    }
 
     Handler mHideHandler = new Handler();
     Runnable mHideRunnable = new Runnable() {
