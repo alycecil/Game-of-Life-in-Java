@@ -29,9 +29,9 @@ public class GameState extends Board implements IBoardVisualizer {
         timer = new Timer("GameOfLifeTimer", true);
         timer.scheduleAtFixedRate(GameTimerTask.getInstance(),INITIAL_DELAY,PERIOD);
         paintAlive = new Paint();
-        paintAlive.setColor(Color.WHITE);
+        paintAlive.setColor(0xFFD99AB5);
         paintEmpty = new Paint();
-        paintEmpty.setColor(Color.GREEN);
+        paintEmpty.setColor(0xFFF0F0F0);
 
         addCell(2, 2);
         addCell(3, 2);

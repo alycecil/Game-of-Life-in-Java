@@ -21,13 +21,9 @@ public class GameTimerTask extends TimerTask {
     @Override
     public void run() {
         GameState state = GameState.getInstance();
-        l.log(Level.INFO,"Starting GameTimerTask");
         if(state.running){
             state.nextState();
+            state.displayCurrentStateOfBoard();
         }
-        state.displayCurrentStateOfBoard();
-
-        l.log(Level.INFO,"Done GameTimerTask");
-
     }
 }
