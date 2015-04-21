@@ -3,4 +3,5 @@
     <string name="run">Run</string>
     <string name="pause">Pause</string>
     <string name="step">Step</string>
+    <string name="reset">Reset</string>
 </resources>

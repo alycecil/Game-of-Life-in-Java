@@ -19,7 +19,7 @@ public class GameTimerTask extends TimerTask {
     public void run() {
         GameState state = GameState.getInstance();
         if(state.running){
-            state.nextState();
+            state.playGame();
             state.displayCurrentStateOfBoard();
         }
     }

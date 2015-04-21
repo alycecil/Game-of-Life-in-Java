@@ -10,7 +10,7 @@ import java.util.Timer;
 import GameOfLife.Board;
 import GameOfLife.IBoardVisualizer;
 
-public class GameState extends Board implements IBoardVisualizer {
+public class GameState implements IBoardVisualizer {
     private static final long PERIOD = 333l;
     private static final long INITIAL_DELAY = 1000l;
     private static final float BORDER_X = 2f;
@@ -22,11 +22,13 @@ public class GameState extends Board implements IBoardVisualizer {
     Timer timer;
     ImageView imageView;
     Canvas canvas;
+    Board board;
 
     public boolean running = false;
-    private int areaSize = 16;
+    private int areaSize = 32;
 
     private GameState() {
+        board = new Board();
         timer = new Timer("GameOfLifeTimer", true);
         timer.scheduleAtFixedRate(GameTimerTask.getInstance(), INITIAL_DELAY, PERIOD);
         paintAlive = new Paint();
@@ -54,7 +56,7 @@ public class GameState extends Board implements IBoardVisualizer {
                 y0 += BORDER_Y;
 
                 Paint paint;
-                if (isCellExist(j, i)) {
+                if (board.isCellExist(j, i)) {
                     paint = paintAlive;
                 } else {
                     paint = paintEmpty;
@@ -72,9 +74,8 @@ public class GameState extends Board implements IBoardVisualizer {
     }
 
     @Override
-    @Deprecated
     public void playGame() {
-        nextState();
+        board.nextState();
     }
 
     public void setImageView(ImageView imageView) {
@@ -100,14 +101,18 @@ public class GameState extends Board implements IBoardVisualizer {
         int myX = (int) (x / xStep);
         int myY = (int) (y / xStep);
 
-        if(removable && isCellExist(myY,myX)){
-            removeCell(myY,myX);
+        if(removable && board.isCellExist(myY,myX)){
+            board.removeCell(myY,myX);
         }else {
-            addCell(myY, myX);
+            board.addCell(myY, myX);
         }
 
         System.out.println("cell added @"+myX+","+myY);
 
         displayCurrentStateOfBoard();
+    }
+
+    public void reset(){
+        board = new Board();
     }
 }
